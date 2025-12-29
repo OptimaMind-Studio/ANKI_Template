@@ -1,0 +1,140 @@
+/* --- 全局基础 --- */
+.card {
+    font-family: arial;
+    font-size: 26px;
+    margin: 0;
+    min-height: 100vh;
+    background-color: #f6faf2; /* 淡绿背景 */
+}
+
+/* --- 名字标题容器 (Back Header) --- */
+.cornell-header {
+    grid-area: header;
+    position: relative;
+    background-color: #fffde7; /* 淡黄标题框 */
+    padding: 20px 15px 18px 15px;
+    text-align: center;
+    border-bottom: 1px solid #f0f4c3;
+    color: #2d5a27;            
+    font-weight: bold;
+    font-size: 22px;
+}
+
+/* 左上角红色小字 (Field) */
+.field-red-tag {
+    position: absolute;
+    left: 12px;
+    top: 8px;
+    font-family: "KaiTi", "楷体", STKaiti, serif; 
+    font-weight: bold;
+    color: #d32f2f;
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* 右下角蓝色小字 (Taxonomy) */
+.taxonomy-blue-tag {
+    position: absolute;
+    right: 12px;
+    bottom: 6px;
+    font-family: "KaiTi", "楷体", STKaiti, serif; 
+    font-weight: bold;
+    color: #1976d2;
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* --- 正面样式 (Front) --- */
+.highlight-box {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    transform: translate(-50%, -50%);
+    background-color: #fffde7; 
+    border: 1px solid #f0f4c3;
+    color: #2d5a27;            
+    border-radius: 15px;
+    padding: 25px 50px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    text-align: center;
+    line-height: 1.2;
+    overflow: hidden;
+}
+
+.en-sub {
+    display: block;
+    font-size: 18px;
+    margin-top: 8px;
+    font-weight: normal;
+    opacity: 0.8;
+}
+
+/* --- 背面布局 (Back Cornell) --- */
+.cornell-layout {
+    display: grid;
+    grid-template-areas: "header header" "left right" "footer footer";
+    grid-template-columns: 2fr 1fr; 
+    grid-template-rows: auto 1fr auto;
+    width: 94%;
+    max-width: 850px;
+    margin: 20px auto;
+    background-color: #ffffff; 
+    border: 1px solid #dcedc8; 
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    overflow: hidden;
+    min-height: 80vh;
+}
+
+.cornell-left {
+    grid-area: left;
+    padding: 20px 15px;
+    border-right: 1px solid #f0f4eb;
+    text-align: left;
+    font-size: 16px;
+    color: #444;
+    line-height: 1.6;
+}
+
+.cornell-right {
+    grid-area: right;
+    padding: 20px 15px;
+    background-color: #fffef9; 
+    text-align: left;
+    /* 核心修改：缩小字号并调整颜色 */
+    font-size: 13px; 
+    color: #555;
+    line-height: 1.5;
+}
+
+/* 添加这一段：实现你想要的“划线”感 */
+.cornell-right div, .cornell-right p {
+    border-left: 2px solid #dcedc8; /* 左侧绿色划线 */
+    padding-left: 8px;
+    margin-bottom: 8px;
+    font-style: italic; /* 斜体增加摘录感 */
+}
+.cornell-footer {
+    grid-area: footer;
+    padding: 12px 15px;
+    background-color: #fafdf8;
+    border-top: 1px solid #f0f4eb;
+    font-size: 14px;
+    color: #666;
+    text-align: left;
+}
+
+.label {
+    font-size: 10px;
+    color: #a5b39b;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* 表格兼容 */
+table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+th, td { border: 1px solid #666; padding: 6px 8px; font-size: 15px; }
+th { background-color: #f0f0f0; }

@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Anki package files (optional - uncomment if you don't want to track .apkg files)
+# *.apkg
+
+# Temporary files
+*.tmp
+*.log
+*.cache
+
