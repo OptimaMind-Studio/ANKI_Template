@@ -1,0 +1,45 @@
+<div class="card">
+    <div id="name-container-front" class="highlight-box" style="position: relative;">
+      <div id="field-tag-front" style="position: absolute; left: 12px; top: 8px; color: #d32f2f; font-family: 'KaiTi', '楷体', STKaiti, serif; font-weight: bold; font-size: 15px; opacity: 0.9; line-height: 1;">
+        {{Field}}
+      </div>
+  
+      <div id="taxonomy-tag-front" style="position: absolute; right: 12px; bottom: 8px; color: #1976d2; font-family: 'KaiTi', '楷体', STKaiti, serif; font-weight: bold; font-size: 12px; opacity: 0.9; line-height: 1;">
+        {{Taxonomy}}
+      </div>
+      
+      <span id="target-name-raw">{{Name}}</span>
+    </div>
+  </div>
+  
+  <script>
+  (function() {
+    // 1. 获取目标节点
+    var nameSpan = document.getElementById('target-name-raw');
+    if (!nameSpan) return;
+  
+    var text = nameSpan.innerText.trim();
+    
+    // 2. 定位中英文分界点（第一个英文字母的位置）
+    var splitIndex = text.search(/[A-Za-z]/);
+  
+    // 3. 处理分行逻辑
+    if (splitIndex > 0) {
+      // 提取中文部分：移除末尾可能的括号或符号
+      var cnPart = text.substring(0, splitIndex).trim().replace(/[\(\[（【\s\-]+$/, "");
+      // 提取英文部分：移除末尾可能的括号或符号
+      var enPart = text.substring(splitIndex).trim().replace(/[\)\]）】]+$/, "");
+  
+      // 重新构建内部 HTML 结构
+      nameSpan.innerHTML = 
+        '<div style="font-size: 24px; font-weight: bold; margin-top: 15px;">' + cnPart + '</div>' + 
+        '<div style="font-size: 16px; font-weight: normal; opacity: 0.7; margin-top: 5px;">' + enPart + '</div>';
+    } else {
+      // 4. 纯中文/无英文时的兜底样式
+      nameSpan.style.display = "block";
+      nameSpan.style.fontSize = "24px";
+      nameSpan.style.fontWeight = "bold";
+      nameSpan.style.marginTop = "15px";
+    }
+  })();
+  </script>
