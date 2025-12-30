@@ -1,0 +1,296 @@
+<div class="cornell-layout">
+
+    <div class="cornell-header" style="position: relative;">
+    
+    <div style="position: absolute; left: 12px; top: 8px; color: #d32f2f; font-family: 'KaiTi', '楷体', STKaiti, serif; font-weight: bold; font-size: 15px; opacity: 0.9; line-height: 1;">
+    
+    {{Field}}
+    
+    </div>
+    
+    
+    
+    <div style="position: absolute; right: 12px; bottom: 6px; color: #1976d2; font-family: 'KaiTi', '楷体', STKaiti, serif; font-weight: bold; font-size: 12px; opacity: 0.9; line-height: 1;">
+    
+    {{Taxonomy}}
+    
+    </div>
+    
+    
+    
+    <div id="name-text-only">{{Name}}</div>
+    
+    </div>
+    
+    
+    
+    <div class="cornell-left">
+    
+    <span class="label">REFERENCES</span>
+    
+    <div id="ref-links-container" class="ref-content" style="word-break: break-all; margin-bottom: 20px;">{{References}}</div>
+    
+    
+    <hr style="border: 0; border-top: 1px solid #f0f4eb; margin: 15px 0;">
+    
+    
+    <span class="label">AI Notes</span>
+    
+    <div class="ai-controls" style="margin-bottom: 8px;">
+      <button id="btn-zh">只显示中文</button>
+      <button id="btn-en">只显示英文</button>
+      <button id="btn-mix">中英文混合</button>
+    </div>
+    
+    <div class="ai-content">{{AINotes}}</div>
+    
+    </div>
+    
+    
+    
+    <div class="cornell-right">
+    
+    <span class="label">MY NOTES</span>
+    
+    <div class="my-content">{{MyNotes}}</div>
+    
+    </div>
+    
+    </div>
+    
+    
+    
+    <script>
+    
+    (function() {
+    
+    // 0. 调整AI Notes的header字号，<h1>~<h6> → min(h+3, 5)
+    // ===== 0. 处理 AI Notes Header 升级 =====
+      var aiNode = document.querySelector('.ai-content');
+      if (aiNode) {
+        // 保存原始 HTML，用于“中英文混合”按钮
+        var originalHTML = aiNode.innerHTML;
+    
+        // header 升级: <h1>~<h6> → min(h+3,5)
+        aiNode.innerHTML = aiNode.innerHTML
+          .replace(/<h([1-6])>/gi, function(match, level) {
+            var newLevel = Math.min(parseInt(level) + 3, 5);
+            return '<h' + newLevel + '>';
+          })
+          .replace(/<\/h([1-6])>/gi, function(match, level) {
+            var newLevel = Math.min(parseInt(level) + 3, 5);
+            return '</h' + newLevel + '>';
+          });
+    
+        // ===== 1. 中文/英文拆分逻辑（只处理文本节点，不破坏 HTML 标签） =====
+        function splitChineseEnglishNode(node) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            var text = node.nodeValue;
+            if (text.trim() === '') return;
+    
+            var frag = document.createDocumentFragment();
+            var regex = /([\u4e00-\u9fff，。！？：；《》“”‘’——…、]+|[A-Za-z0-9.,!?:;"\'\s]+)/g;
+            var match;
+            while ((match = regex.exec(text)) !== null) {
+              var span = document.createElement('span');
+              if (/[\u4e00-\u9fff]/.test(match[0])) {
+                span.className = 'zh';
+              } else {
+                span.className = 'en';
+              }
+              span.textContent = match[0];
+              frag.appendChild(span);
+            }
+            node.parentNode.replaceChild(frag, node);
+          } else if (node.nodeType === Node.ELEMENT_NODE) {
+            node.childNodes.forEach(splitChineseEnglishNode);
+          }
+        }
+    
+        splitChineseEnglishNode(aiNode);
+    
+        // ===== 2. 按钮事件 =====
+        var btnZh = document.getElementById('btn-zh');
+        var btnEn = document.getElementById('btn-en');
+        var btnMix = document.getElementById('btn-mix');
+    
+        btnZh && btnZh.addEventListener('click', function() {
+          aiNode.querySelectorAll('.zh').forEach(s => s.style.display = 'inline');
+          aiNode.querySelectorAll('.en').forEach(s => s.style.display = 'none');
+        });
+    
+        btnEn && btnEn.addEventListener('click', function() {
+          aiNode.querySelectorAll('.zh').forEach(s => s.style.display = 'none');
+          aiNode.querySelectorAll('.en').forEach(s => s.style.display = 'inline');
+        });
+    
+        btnMix && btnMix.addEventListener('click', function() {
+          // 恢复原始 HTML
+          aiNode.innerHTML = originalHTML;
+    
+          // 再次执行 header 升级（因为原 HTML 可能有 <h> 标签）
+          aiNode.innerHTML = aiNode.innerHTML
+            .replace(/<h([1-6])>/gi, function(match, level) {
+              var newLevel = Math.min(parseInt(level) + 3, 5);
+              return '<h' + newLevel + '>';
+            })
+            .replace(/<\/h([1-6])>/gi, function(match, level) {
+              var newLevel = Math.min(parseInt(level) + 3, 5);
+              return '</h' + newLevel + '>';
+            });
+        });
+      }
+    
+    // 1. 处理名字分行 (完全保留你原本的)
+    
+    var nameNode = document.getElementById('name-text-only');
+    
+    if (nameNode) {
+    
+    var nameText = nameNode.innerText.trim();
+    
+    var nameMatch = nameText.match(/([^\x00-\xff]+)\s*([A-Za-z].*)/);
+    
+    if (nameMatch) {
+    
+    nameNode.innerHTML = '<div>' + nameMatch[1].trim() + '</div>' +
+    
+    '<div style="font-size:14px; font-weight:normal; opacity:0.7; margin-top:4px;">' + nameMatch[2].trim() + '</div>';
+    
+    }
+    
+    }
+    
+    
+    
+    // 2. 通用处理协议链接 (References 区域 - 完全保留你原本的)
+    
+    var refContainer = document.getElementById('ref-links-container');
+    
+    if (refContainer) {
+    
+    var rawContent = refContainer.innerText.trim();
+    
+    if (rawContent && rawContent !== "{{References}}") {
+    
+    var lines = rawContent.split(/\n|<br>|<div>/);
+    
+    var resultHtml = "";
+    
+    lines.forEach(function(line) {
+    
+    var item = line.replace(/<\/div>/g, "").trim();
+    
+    var linkMatch = item.match(/^([a-z0-9]+):\/\/(.*)/i);
+    
+    if (linkMatch) {
+    
+    var protocol = linkMatch[1].toLowerCase();
+    
+    var rest = linkMatch[2];
+    
+    var displayName = "";
+    
+    var icon = "🔗";
+    
+    if (protocol === "obsidian") {
+    
+    var fileMatch = item.match(/file=([^&]+)/);
+    
+    displayName = fileMatch ? decodeURIComponent(fileMatch[1]) : "Obsidian Note";
+    
+    displayName = displayName.replace(/\//g, " › ");
+    
+    } else if (protocol === "anki") {
+    
+    displayName = "Anki: " + decodeURIComponent(rest).split(/[?&]/)[0];
+    
+    icon = "📇";
+    
+    } else {
+    
+    displayName = protocol.toUpperCase() + " Link";
+    
+    }
+    
+    resultHtml += '<div style="margin-top:4px;"><a href="' + item + '" style="color: #2d5a27; text-decoration: none; font-size: 13px; border-bottom: 1px dashed #2d5a27;">' + icon + ' ' + displayName + '</a></div>';
+    
+    } else if (item.length > 0) {
+    
+    resultHtml += '<div style="font-size: 13px; color: #666;">' + item + '</div>';
+    
+    }
+    
+    });
+    
+    refContainer.innerHTML = resultHtml;
+    
+    }
+    
+    }
+    
+    
+    
+    // 3. 核心修改：只针对 MyNotes 部分执行链接转换
+    
+    var notesNode = document.querySelector('.my-content');
+    
+    if (notesNode) {
+    
+    var html = notesNode.innerHTML;
+    
+    // 使用正则全局查找协议链接，并参考 References 的逻辑进行转换
+    
+    // 匹配 obsidian://, anki:// 等直到遇到空格或标签结束
+    
+    var regex = /([a-z0-9]+:\/\/[^\s<]+)/gi;
+    
+    
+    var newHtml = html.replace(regex, function(url) {
+    
+    // 解析逻辑复刻自上面的 References 部分
+    
+    var protocolMatch = url.match(/^([a-z0-9]+):\/\//i);
+    
+    var protocol = protocolMatch ? protocolMatch[1].toLowerCase() : "";
+    
+    var displayName = "Link";
+    
+    var icon = "🔗";
+    
+    
+    
+    if (protocol === "obsidian") {
+    
+    var fileMatch = url.match(/file=([^&]+)/);
+    
+    displayName = fileMatch ? decodeURIComponent(fileMatch[1]).replace(/\//g, " › ") : "Obsidian Note";
+    
+    } else if (protocol === "anki") {
+    
+    icon = "📇";
+    
+    displayName = "Anki Note";
+    
+    }
+    
+    
+    // 返回一个可点击的超链接 HTML
+    
+    return '<a href="' + url + '" style="color: #1976d2; text-decoration: none; border-bottom: 1px dashed #1976d2; font-style: normal;">' + icon + ' ' + displayName + '</a>';
+    
+    });
+    
+    
+    
+    // 将转换后的内容重新塞回去，且不改变原有的分块显示
+    
+    notesNode.innerHTML = newHtml;
+    
+    }
+    
+    
+    
+    })();
+    
+    </script>
