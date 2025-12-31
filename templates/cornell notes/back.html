@@ -1,176 +1,175 @@
 <div class="cornell-layout">
-    <div class="cornell-header" style="position: relative;">
-      <div style="position: absolute; left: 12px; top: 8px; color: #d32f2f; font-family: 'KaiTi', '楷体', STKaiti, serif; font-weight: bold; font-size: 15px; opacity: 0.9; line-height: 1;">
-        {{Field}}
-      </div>
-      <div style="position: absolute; right: 12px; bottom: 6px; color: #1976d2; font-family: 'KaiTi', '楷体', STKaiti, serif; font-weight: bold; font-size: 12px; opacity: 0.9; line-height: 1;">
-        {{Taxonomy}}
-      </div>
-      <div id="name-text-only">{{Name}}</div>
+  <div class="cornell-header" style="position: relative;">
+    <div style="position: absolute; left: 12px; top: 8px; color: #d32f2f; font-family: 'KaiTi', '楷体', STKaiti, serif; font-weight: bold; font-size: 15px; opacity: 0.9; line-height: 1;">
+      {{Field}}
     </div>
-  
-    <div class="cornell-left">
-      <span class="label">REFERENCES</span>
-      <div id="ref-links-container" class="ref-content" style="word-break: break-all; margin-bottom: 20px;">{{References}}</div>
-      <hr style="border: 0; border-top: 1px solid #f0f4eb; margin: 15px 0;">
-      <span class="label">AI Notes</span>
-      <div class="ai-controls" style="margin-bottom: 8px;">
-        <button id="btn-zh">只显示中文</button>
-        <button id="btn-en">只显示英文</button>
-        <button id="btn-mix">原始内容</button>
-      </div>
-      <div class="ai-content">{{AINotes}}</div>
+
+    <div style="position: absolute; right: 12px; top: 8px; color: #000000; font-family: 'KaiTi', '楷体', STKaiti, serif; font-weight: bold; font-size: 12px; opacity: 0.9; line-height: 1;">
+      {{Source}}
     </div>
-  
-    <div class="cornell-right">
-      <span class="label">MY NOTES</span>
-      <div class="my-content">{{MyNotes}}</div>
+
+    <div style="position: absolute; right: 12px; bottom: 6px; color: #1976d2; font-family: 'KaiTi', '楷体', STKaiti, serif; font-weight: bold; font-size: 12px; opacity: 0.9; line-height: 1;">
+      {{Taxonomy}}
     </div>
+
+    <div id="name-text-only">{{Name}}</div>
   </div>
-  
-  <script>
-  (function() {
-    // ===== 0. AI Notes 处理逻辑 =====
-    var aiNode = document.querySelector('.ai-content');
-    if (aiNode) {
-      var originalHTML = aiNode.innerHTML;
-  
-      // Header 升级函数：将 h1-h6 提升至 h4-h5
-      function processHeaders(node) {
-        node.innerHTML = node.innerHTML
-          .replace(/<h([1-6])>/gi, function(match, level) {
-            var newLevel = Math.min(parseInt(level) + 3, 5);
-            return '<h' + newLevel + '>';
-          })
-          .replace(/<\/h([1-6])>/gi, function(match, level) {
-            var newLevel = Math.min(parseInt(level) + 3, 5);
-            return '</h' + newLevel + '>';
-          });
-      }
-  
-      // 中英文拆分函数：将纯文本包装在 span.zh 或 span.en 中
-      function splitChineseEnglishNode(node) {
-        if (node.nodeType === Node.TEXT_NODE) {
-          var text = node.nodeValue;
-          if (text.trim() === '') return;
-          var frag = document.createDocumentFragment();
-          var regex = /([\u4e00-\u9fff，。！？：；《》“”‘’——…、]+|[A-Za-z0-9.,!?:;"\'\s]+)/g;
-          var match;
-          while ((match = regex.exec(text)) !== null) {
-            var span = document.createElement('span');
-            if (/[\u4e00-\u9fff]/.test(match[0])) {
-              span.className = 'zh';
-            } else {
-              span.className = 'en';
-            }
-            span.textContent = match[0];
-            frag.appendChild(span);
-          }
-          node.parentNode.replaceChild(frag, node);
-        } else if (node.nodeType === Node.ELEMENT_NODE) {
-          Array.from(node.childNodes).forEach(splitChineseEnglishNode);
+
+  <div class="cornell-left">
+    <span class="label">REFERENCES</span>
+    <div id="ref-links-container" class="ref-content" style="word-break: break-all; margin-bottom: 20px;">{{References}}</div>
+    <hr style="border: 0; border-top: 1px solid #f0f4eb; margin: 15px 0;">
+    <span class="label">AI Notes</span>
+    <div class="ai-controls" style="margin-bottom: 8px;">
+      <button id="btn-zh">只显示中文</button>
+      <button id="btn-en">只显示英文</button>
+      <button id="btn-mix">原始内容</button>
+    </div>
+    <div class="ai-content">{{AINotes}}</div>
+  </div>
+
+  <div class="cornell-right">
+    <span class="label">MY NOTES</span>
+    <div class="my-content">{{MyNotes}}</div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // ===== 0. AI Notes 处理逻辑 =====
+  var aiNode = document.querySelector('.ai-content');
+  if (aiNode) {
+    var originalHTML = aiNode.innerHTML;
+    function processHeaders(node) {
+      node.innerHTML = node.innerHTML
+        .replace(/<h([1-6])>/gi, function(match, level) {
+          var newLevel = Math.min(parseInt(level) + 3, 5);
+          return '<h' + newLevel + '>';
+        })
+        .replace(/<\/h([1-6])>/gi, function(match, level) {
+          var newLevel = Math.min(parseInt(level) + 3, 5);
+          return '</h' + newLevel + '>';
+        });
+    }
+    function splitChineseEnglishNode(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        var text = node.nodeValue;
+        if (text.trim() === '') return;
+        var frag = document.createDocumentFragment();
+        var regex = /([\u4e00-\u9fff，。！？：；《》“”‘’——…、]+|[A-Za-z0-9.,!?:;"\'\s]+)/g;
+        var match;
+        while ((match = regex.exec(text)) !== null) {
+          var span = document.createElement('span');
+          if (/[\u4e00-\u9fff]/.test(match[0])) { span.className = 'zh'; } else { span.className = 'en'; }
+          span.textContent = match[0];
+          frag.appendChild(span);
         }
+        node.parentNode.replaceChild(frag, node);
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        Array.from(node.childNodes).forEach(splitChineseEnglishNode);
       }
-  
-      // 初始化：执行 Header 升级，并默认执行拆分（为了初始点击按钮有效）
+    }
+    processHeaders(aiNode);
+    splitChineseEnglishNode(aiNode);
+    var btnZh = document.getElementById('btn-zh');
+    var btnEn = document.getElementById('btn-en');
+    var btnMix = document.getElementById('btn-mix');
+    function ensureSplitAndFilter(showClass, hideClass) {
+      aiNode.innerHTML = originalHTML;
       processHeaders(aiNode);
       splitChineseEnglishNode(aiNode);
-  
-      var btnZh = document.getElementById('btn-zh');
-      var btnEn = document.getElementById('btn-en');
-      var btnMix = document.getElementById('btn-mix');
-  
-      // 统一的处理函数，确保点击按钮时如果 DOM 没拆分则先拆分
-      function ensureSplitAndFilter(showClass, hideClass) {
-        // 每次切换前先恢复原始状态重新拆分，确保逻辑纯净
-        aiNode.innerHTML = originalHTML;
-        processHeaders(aiNode);
-        splitChineseEnglishNode(aiNode);
-        
-        aiNode.querySelectorAll('.' + showClass).forEach(s => s.style.display = 'inline');
-        aiNode.querySelectorAll('.' + hideClass).forEach(s => s.style.display = 'none');
-      }
-  
-      btnZh && btnZh.addEventListener('click', function() {
-        ensureSplitAndFilter('zh', 'en');
-      });
-  
-      btnEn && btnEn.addEventListener('click', function() {
-        ensureSplitAndFilter('en', 'zh');
-      });
-  
-      btnMix && btnMix.addEventListener('click', function() {
-        // 核心需求：直接显示原始格式，不带任何拆分的 span 标签
-        aiNode.innerHTML = originalHTML;
-        processHeaders(aiNode);
-      });
+      aiNode.querySelectorAll('.' + showClass).forEach(s => s.style.display = 'inline');
+      aiNode.querySelectorAll('.' + hideClass).forEach(s => s.style.display = 'none');
     }
-  
-    // ===== 1. 处理名字分行 =====
-    var nameNode = document.getElementById('name-text-only');
-    if (nameNode) {
-      var nameText = nameNode.innerText.trim();
-      var nameMatch = nameText.match(/([^\x00-\xff]+)\s*([A-Za-z].*)/);
-      if (nameMatch) {
-        nameNode.innerHTML = '<div>' + nameMatch[1].trim() + '</div>' +
-          '<div style="font-size:14px; font-weight:normal; opacity:0.7; margin-top:4px;">' + nameMatch[2].trim() + '</div>';
-      }
+    btnZh && btnZh.addEventListener('click', function() { ensureSplitAndFilter('zh', 'en'); });
+    btnEn && btnEn.addEventListener('click', function() { ensureSplitAndFilter('en', 'zh'); });
+    btnMix && btnMix.addEventListener('click', function() {
+      aiNode.innerHTML = originalHTML;
+      processHeaders(aiNode);
+    });
+  }
+
+  // ===== 1. 处理名字分行 =====
+  var nameNode = document.getElementById('name-text-only');
+  if (nameNode) {
+    var nameText = nameNode.innerText.trim();
+    var nameMatch = nameText.match(/([^\x00-\xff]+)\s*([A-Za-z].*)/);
+    if (nameMatch) {
+      nameNode.innerHTML = '<div>' + nameMatch[1].trim() + '</div>' +
+        '<div style="font-size:14px; font-weight:normal; opacity:0.7; margin-top:4px;">' + nameMatch[2].trim() + '</div>';
     }
-  
-    // ===== 2. References 区域处理 =====
-    var refContainer = document.getElementById('ref-links-container');
-    if (refContainer) {
-      var rawContent = refContainer.innerText.trim();
-      if (rawContent && rawContent !== "{{References}}") {
-        var lines = rawContent.split(/\n|<br>|<div>/);
-        var resultHtml = "";
-        lines.forEach(function(line) {
-          var item = line.replace(/<\/div>/g, "").trim();
-          var linkMatch = item.match(/^([a-z0-9]+):\/\/(.*)/i);
-          if (linkMatch) {
-            var protocol = linkMatch[1].toLowerCase();
-            var rest = linkMatch[2];
-            var displayName = "";
-            var icon = "🔗";
-            if (protocol === "obsidian") {
-              var fileMatch = item.match(/file=([^&]+)/);
-              displayName = fileMatch ? decodeURIComponent(fileMatch[1]) : "Obsidian Note";
-              displayName = displayName.replace(/\//g, " › ");
-            } else if (protocol === "anki") {
-              displayName = "Anki: " + decodeURIComponent(rest).split(/[?&]/)[0];
-              icon = "📇";
-            } else {
-              displayName = protocol.toUpperCase() + " Link";
-            }
-            resultHtml += '<div style="margin-top:4px;"><a href="' + item + '" style="color: #2d5a27; text-decoration: none; font-size: 13px; border-bottom: 1px dashed #2d5a27;">' + icon + ' ' + displayName + '</a></div>';
-          } else if (item.length > 0) {
-            resultHtml += '<div style="font-size: 13px; color: #666;">' + item + '</div>';
-          }
-        });
-        refContainer.innerHTML = resultHtml;
-      }
-    }
-  
-    // ===== 3. MyNotes 部分链接转换 =====
-    var notesNode = document.querySelector('.my-content');
-    if (notesNode) {
-      var html = notesNode.innerHTML;
-      var regex = /([a-z0-9]+:\/\/[^\s<]+)/gi;
-      var newHtml = html.replace(regex, function(url) {
-        var protocolMatch = url.match(/^([a-z0-9]+):\/\//i);
-        var protocol = protocolMatch ? protocolMatch[1].toLowerCase() : "";
-        var displayName = "Link";
-        var icon = "🔗";
-        if (protocol === "obsidian") {
-          var fileMatch = url.match(/file=([^&]+)/);
-          displayName = fileMatch ? decodeURIComponent(fileMatch[1]).replace(/\//g, " › ") : "Obsidian Note";
-        } else if (protocol === "anki") {
-          icon = "📇";
-          displayName = "Anki Note";
+  }
+
+  // ===== 2. References 区域处理 =====
+  var refContainer = document.getElementById('ref-links-container');
+  if (refContainer) {
+    var rawContent = refContainer.innerText.trim();
+    if (rawContent && rawContent !== "{{References}}") {
+      var lines = rawContent.split(/\n|<br>|<div>/);
+      var resultHtml = "";
+      lines.forEach(function(line) {
+        var item = line.replace(/<\/div>/g, "").trim();
+        var linkMatch = item.match(/^([a-z0-9]+):\/\/(.*)/i);
+        if (linkMatch) {
+          var protocol = linkMatch[1].toLowerCase();
+          var rest = linkMatch[2];
+          var displayName = "";
+          var icon = "🔗";
+          if (protocol === "obsidian") {
+            var fileMatch = item.match(/file=([^&]+)/);
+            displayName = fileMatch ? decodeURIComponent(fileMatch[1]).replace(/\//g, " › ") : "Obsidian Note";
+          } else if (protocol === "anki") {
+            displayName = "Anki: " + decodeURIComponent(rest).split(/[?&]/)[0];
+            icon = "📇";
+          } else { displayName = protocol.toUpperCase() + " Link"; }
+          resultHtml += '<div style="margin-top:4px;"><a href="' + item + '" style="color: #2d5a27; text-decoration: none; font-size: 13px; border-bottom: 1px dashed #2d5a27;">' + icon + ' ' + displayName + '</a></div>';
+        } else if (item.length > 0) {
+          resultHtml += '<div style="font-size: 13px; color: #666;">' + item + '</div>';
         }
-        return '<a href="' + url + '" style="color: #1976d2; text-decoration: none; border-bottom: 1px dashed #1976d2; font-style: normal;">' + icon + ' ' + displayName + '</a>';
       });
-      notesNode.innerHTML = newHtml;
+      refContainer.innerHTML = resultHtml;
     }
-  })();
-  </script>
+  }
+
+// ===== 3. MyNotes 增强处理 =====
+  var notesNode = document.querySelector('.my-content');
+  if (notesNode) {
+    var html = notesNode.innerHTML;
+    
+    // A. 标题转换逻辑 (保持蓝色加粗)
+    html = html.replace(/(?:^|<br>|<div>)\s*###\s*(.*?)(\n|<br>|<\/div>|$)/gi, function(match, content, suffix) {
+      var prefix = "";
+      if (match.startsWith('<br>')) prefix = "<br>";
+      else if (match.startsWith('<div>')) prefix = "<div>";
+      return prefix + '<span class="custom-h3">' + content.trim() + '</span>' + suffix;
+    });
+
+    // B. 链接转换逻辑 (改为灰色、斜体、仅显示文件名)
+    var regex = /([a-z0-9]+:\/\/[^\s<]+)/gi;
+    var newHtml = html.replace(regex, function(url) {
+      var protocolMatch = url.match(/^([a-z0-9]+):\/\//i);
+      var protocol = protocolMatch ? protocolMatch[1].toLowerCase() : "";
+      var displayName = "Link";
+      var icon = "🔗";
+      
+      if (protocol === "obsidian") {
+        var fileMatch = url.match(/file=([^&]+)/);
+        if (fileMatch) {
+          var fullPath = decodeURIComponent(fileMatch[1]);
+          // 核心修改：只截取最后一个 / 之后的内容 (文件名)
+          displayName = fullPath.split('/').pop(); 
+        } else {
+          displayName = "Obsidian Note";
+        }
+      } else if (protocol === "anki") {
+        icon = "📇";
+        displayName = "Anki Note";
+      }
+
+      // 核心修改：style 中添加 font-style: italic; 颜色为灰色
+      return '<a href="' + url + '" style="color: #888888; text-decoration: none; border-bottom: 1px dashed #888888; font-style: italic;">' + icon + ' ' + displayName + '</a>';
+    });
+    notesNode.innerHTML = newHtml;
+  }
+})();
+</script>

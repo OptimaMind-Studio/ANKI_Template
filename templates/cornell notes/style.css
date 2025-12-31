@@ -96,24 +96,35 @@
     line-height: 1.6;
 }
 
+/* --- MY NOTES 区域修改 --- */
 .cornell-right {
     grid-area: right;
     padding: 20px 15px;
     background-color: #fffef9; 
     text-align: left;
-    /* 核心修改：缩小字号并调整颜色 */
-    font-size: 13px; 
+    font-size: 13px;      /* 保持小字号 */
     color: #555;
     line-height: 1.5;
 }
 
-/* 添加这一段：实现你想要的“划线”感 */
 .cornell-right div, .cornell-right p {
-    border-left: 2px solid #dcedc8; /* 左侧绿色划线 */
+    border-left: 2px solid #dcedc8; 
     padding-left: 8px;
     margin-bottom: 8px;
-    font-style: italic; /* 斜体增加摘录感 */
+    font-style: normal;   /* 修改点：取消斜体 */
 }
+
+/* 新增：### 转化后的标题样式 */
+.custom-h3 {
+    display: block;
+    color: #1976d2;       /* 修改点：蓝色 */
+    font-weight: bold;    /* 修改点：加粗 */
+    font-size: 16px;      /* 比正文略大 */
+    margin: 12px 0 0px 0;
+    font-style: normal;   /* 确保标题不是斜体 */
+    border-left: none !important; /* 标题通常不需要那根竖线，如需竖线请删掉此行 */
+}
+
 .cornell-footer {
     grid-area: footer;
     padding: 12px 15px;
