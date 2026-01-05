@@ -1,26 +1,32 @@
-/* --- 全局基础 --- */
+/* --- 1. 全局基础 --- */
 .card {
-    font-family: arial;
+    font-family: arial, "Microsoft YaHei", sans-serif;
     font-size: 26px;
     margin: 0;
     min-height: 100vh;
-    background-color: #f6faf2; /* 淡绿背景 */
+    background-color: #f6faf2; 
 }
 
-/* --- 名字标题容器 (Back Header) --- */
-.cornell-header {
-    grid-area: header;
-    position: relative;
-    background-color: #fffde7; /* 淡黄标题框 */
-    padding: 20px 15px 18px 15px;
-    text-align: center;
-    border-bottom: 1px solid #f0f4c3;
+/* --- 2. 正面专用样式 --- */
+.highlight-box {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    background-color: #fffde7; 
+    border: 1px solid #f0f4c3;
     color: #2d5a27;            
-    font-weight: bold;
-    font-size: 22px;
+    border-radius: 15px;
+    padding: 30px 25px 15px 25px; 
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    text-align: center;
+    line-height: 1.2;
+    min-width: 280px;
+    max-width: 85vw;
+    display: flex;
+    flex-direction: column;
 }
 
-/* 左上角红色小字 (Field) */
 .field-red-tag {
     position: absolute;
     left: 12px;
@@ -32,49 +38,44 @@
     opacity: 0.9;
 }
 
-/* 右下角蓝色小字 (Taxonomy) */
+/* 底部容器：解决对齐问题 */
+.bottom-container {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* 蓝色标签：右对齐 */
 .taxonomy-blue-tag {
-    position: absolute;
-    right: 12px;
-    bottom: 6px;
+    text-align: right; 
+    align-self: flex-end; 
     font-family: "KaiTi", "楷体", STKaiti, serif; 
     font-weight: bold;
     color: #1976d2;
-    font-size: 13px;
+    font-size: 11px;
     opacity: 0.9;
+    margin-bottom: 2px;
 }
 
-/* --- 正面样式 (Front) --- */
-.highlight-box {
-    position: absolute;
-    left: 50%;
-    top: 40%;
-    transform: translate(-50%, -50%);
-    background-color: #fffde7; 
-    border: 1px solid #f0f4c3;
-    color: #2d5a27;            
-    border-radius: 15px;
-    padding: 25px 50px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-    text-align: center;
-    line-height: 1.2;
-    overflow: hidden;
+#source-tag-dynamic {
+    font-family: "KaiTi", "楷体", STKaiti, serif; 
+    font-weight: bold;
+    color: #000000;
+    font-size: 10px !important; 
+    line-height: 1.2 !important;
+    opacity: 0.5;
+    text-align: center;      
+    width: 100%;
+    word-wrap: break-word;   
+    margin-top: 4px;
 }
 
-.en-sub {
-    display: block;
-    font-size: 18px;
-    margin-top: 8px;
-    font-weight: normal;
-    opacity: 0.8;
-}
-
-/* --- 背面布局 (Back Cornell) --- */
+/* --- 3. 背面布局 (Back Cornell) --- */
 .cornell-layout {
     display: grid;
-    grid-template-areas: "header header" "left right" "footer footer";
+    grid-template-areas: "header header" "left right";
     grid-template-columns: 2fr 1fr; 
-    grid-template-rows: auto 1fr auto;
     width: 94%;
     max-width: 850px;
     margin: 20px auto;
@@ -83,7 +84,18 @@
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.05);
     overflow: hidden;
-    min-height: 80vh;
+}
+
+.cornell-header {
+    grid-area: header;
+    position: relative;
+    background-color: #fffde7; 
+    padding: 20px 15px 18px 15px;
+    text-align: center;
+    border-bottom: 1px solid #f0f4c3;
+    color: #2d5a27;            
+    font-weight: bold;
+    font-size: 22px;
 }
 
 .cornell-left {
@@ -96,44 +108,49 @@
     line-height: 1.6;
 }
 
-/* --- MY NOTES 区域修改 --- */
 .cornell-right {
     grid-area: right;
     padding: 20px 15px;
     background-color: #fffef9; 
     text-align: left;
-    font-size: 13px;      /* 保持小字号 */
+    font-size: 13px;
     color: #555;
     line-height: 1.5;
+    min-height: 80vh; /* iPad 核心：确保点击空白处回跳 */
+    cursor: pointer;
+    scroll-behavior: smooth;
 }
 
 .cornell-right div, .cornell-right p {
     border-left: 2px solid #dcedc8; 
     padding-left: 8px;
     margin-bottom: 8px;
-    font-style: normal;   /* 修改点：取消斜体 */
+    cursor: default;
 }
 
-/* 新增：### 转化后的标题样式 */
-.custom-h3 {
-    display: block;
-    color: #1976d2;       /* 修改点：蓝色 */
-    font-weight: bold;    /* 修改点：加粗 */
-    font-size: 16px;      /* 比正文略大 */
-    margin: 12px 0 0px 0;
-    font-style: normal;   /* 确保标题不是斜体 */
-    border-left: none !important; /* 标题通常不需要那根竖线，如需竖线请删掉此行 */
+/* 目录 (Outline) 样式 */
+.outline-content {
+  max-height: 250px;
+  overflow-y: auto;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 5px;
 }
-
-.cornell-footer {
-    grid-area: footer;
-    padding: 12px 15px;
-    background-color: #fafdf8;
-    border-top: 1px solid #f0f4eb;
-    font-size: 14px;
-    color: #666;
-    text-align: left;
+.outline-item {
+  display: block;
+  padding: 3px 6px;
+  color: #555;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  border-radius: 4px;
 }
+.outline-item:hover { background-color: #f0f0f0; color: #1976d2; }
+.outline-h1 { font-weight: bold; font-size: 14px; }
+.outline-h2 { margin-left: 12px; color: #666; }
+.outline-h3 { margin-left: 24px; color: #888; font-size: 12px; }
 
 .label {
     font-size: 10px;
@@ -145,7 +162,16 @@
     letter-spacing: 1px;
 }
 
-/* 表格兼容 */
+.custom-h3 {
+    display: block;
+    color: #1976d2;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 12px 0 0px 0;
+}
+
+.ai-content h1, .ai-content h2, .ai-content h3 { color: green !important; }
+
 table { border-collapse: collapse; width: 100%; margin-top: 10px; }
 th, td { border: 1px solid #666; padding: 6px 8px; font-size: 15px; }
 th { background-color: #f0f0f0; }
