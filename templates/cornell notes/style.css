@@ -38,7 +38,7 @@
     opacity: 0.9;
 }
 
-/* 底部容器：解决对齐问题 */
+/* 底部容器 */
 .bottom-container {
     margin-top: 15px;
     display: flex;
@@ -46,7 +46,7 @@
     width: 100%;
 }
 
-/* 蓝色标签：右对齐 */
+/* 蓝色标签 */
 .taxonomy-blue-tag {
     text-align: right; 
     align-self: flex-end; 
@@ -86,6 +86,16 @@
     overflow: hidden;
 }
 
+/* 适配手机端：单列显示 */
+@media screen and (max-width: 600px) {
+    .cornell-layout {
+        grid-template-areas: "header" "left" "right";
+        grid-template-columns: 1fr;
+    }
+    .cornell-left { border-right: none; border-bottom: 1px solid #f0f4eb; }
+    .cornell-right { min-height: auto !important; }
+}
+
 .cornell-header {
     grid-area: header;
     position: relative;
@@ -106,6 +116,7 @@
     font-size: 16px;
     color: #444;
     line-height: 1.6;
+    overflow-x: auto; /* 允许横向溢出 */
 }
 
 .cornell-right {
@@ -116,9 +127,10 @@
     font-size: 13px;
     color: #555;
     line-height: 1.5;
-    min-height: 80vh; /* iPad 核心：确保点击空白处回跳 */
+    min-height: 80vh; 
     cursor: pointer;
     scroll-behavior: smooth;
+    overflow-x: auto;
 }
 
 .cornell-right div, .cornell-right p {
@@ -127,6 +139,27 @@
     margin-bottom: 8px;
     cursor: default;
 }
+
+/* --- 核心表格修复 --- */
+table { 
+    border-collapse: collapse; 
+    width: 100% !important; 
+    margin: 15px 0; 
+    table-layout: fixed; /* 强制固定布局，防止溢出 */
+}
+
+th, td { 
+    border: 1px solid #ccc; 
+    padding: 8px; 
+    font-size: 14px; 
+    line-height: 1.4;
+    word-wrap: break-word; 
+    word-break: break-all; /* 强制长英文/代码折行 */
+    overflow-wrap: break-word;
+    text-align: left;
+}
+
+th { background-color: #f8f9fa; font-weight: bold; color: #2d5a27; }
 
 /* 目录 (Outline) 样式 */
 .outline-content {
@@ -170,8 +203,5 @@
     margin: 12px 0 0px 0;
 }
 
-.ai-content h1, .ai-content h2, .ai-content h3 { color: green !important; }
-
-table { border-collapse: collapse; width: 100%; margin-top: 10px; }
-th, td { border: 1px solid #666; padding: 6px 8px; font-size: 15px; }
-th { background-color: #f0f0f0; }
+.ai-content h1, .ai-content h2, .ai-content h3 { color: green !important; margin: 15px 0 10px 0; }
+.ai-content p { margin-bottom: 10px; }
