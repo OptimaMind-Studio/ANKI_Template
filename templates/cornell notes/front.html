@@ -9,27 +9,50 @@
         <div class="bottom-container">
             <div class="taxonomy-blue-tag">{{Taxonomy}}</div>
             <div id="source-tag-dynamic">{{Source}}</div>
+
+            {{#References}}
+            <div class="front-ref-wrapper">
+                <hr class="ref-divider">
+                <span class="label">REFERENCES</span>
+                <div id="front-ref-content" class="ref-content">
+                    {{References}}
+                </div>
+            </div>
+            {{/References}}
         </div>
     </div>
 </div>
 
 <script>
 (function() {
+    // --- 1. 处理 Name 中英文分行 ---
     var nameSpan = document.getElementById('target-name-raw');
-    if (!nameSpan) return;
-    var text = nameSpan.innerText.trim();
-    var splitIndex = text.search(/[A-Za-z]/);
+    if (nameSpan) {
+        var text = nameSpan.innerText.trim();
+        var splitIndex = text.search(/[A-Za-z]/);
+        if (splitIndex > 0) {
+            var cnPart = text.substring(0, splitIndex).trim().replace(/[\(\[（【\s\-]+$/, "");
+            var enPart = text.substring(splitIndex).trim().replace(/[\)\]）】]+$/, "");
+            nameSpan.innerHTML = 
+                '<div style="font-size: 24px; font-weight: bold; margin-top: 5px;">' + cnPart + '</div>' + 
+                '<div style="font-size: 18px; font-weight: normal; opacity: 0.8; margin-top: 5px;">' + enPart + '</div>';
+        } else {
+            nameSpan.style.display = "block";
+            nameSpan.style.fontSize = "24px";
+            nameSpan.style.fontWeight = "bold";
+        }
+    }
 
-    if (splitIndex > 0) {
-        var cnPart = text.substring(0, splitIndex).trim().replace(/[\(\[（【\s\-]+$/, "");
-        var enPart = text.substring(splitIndex).trim().replace(/[\)\]）】]+$/, "");
-        nameSpan.innerHTML = 
-            '<div style="font-size: 24px; font-weight: bold; margin-top: 5px;">' + cnPart + '</div>' + 
-            '<div style="font-size: 18px; font-weight: normal; opacity: 0.8; margin-top: 5px;">' + enPart + '</div>';
-    } else {
-        nameSpan.style.display = "block";
-        nameSpan.style.fontSize = "24px";
-        nameSpan.style.fontWeight = "bold";
+    // --- 2. 处理 References 链接美化 ---
+    var refContent = document.getElementById('front-ref-content');
+    if (refContent) {
+        refContent.innerHTML = refContent.innerHTML.replace(/([a-z0-9]+:\/\/[^\s<]+)/gi, function(url) {
+            var label = "Link";
+            if (url.includes("obsidian")) {
+                label = decodeURIComponent(url.split('/').pop().split('?')[0]);
+            }
+            return '<a href="'+url+'" style="color:#888; text-decoration:none; font-style:italic;">🔗 '+ label +'</a>';
+        });
     }
 })();
 </script>

@@ -203,5 +203,38 @@ th { background-color: #f8f9fa; font-weight: bold; color: #2d5a27; }
     margin: 12px 0 0px 0;
 }
 
+/* --- 4. 增量部分：正面 References 微调 --- */
+.front-ref-wrapper {
+    margin-top: 8px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* 引用内容靠左显示，方便阅读长链接 */
+}
+
+.ref-divider {
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    width: 100%;
+    margin: 8px 0;
+}
+
+.front-ref-wrapper .ref-content {
+    font-size: 12px;
+    line-height: 1.4;
+    color: #666;
+    text-align: left;
+    word-wrap: break-word;
+    word-break: break-all;
+    width: 100%;
+}
+
+/* 确保正面 label 足够小且不抢眼 */
+.front-ref-wrapper .label {
+    font-size: 9px;
+    margin-bottom: 3px;
+    color: #a5b39b; /* 使用你原本定义的 label 颜色 */
+}
+
 .ai-content h1, .ai-content h2, .ai-content h3 { color: green !important; margin: 15px 0 10px 0; }
 .ai-content p { margin-bottom: 10px; }
